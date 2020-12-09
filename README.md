@@ -1,5 +1,5 @@
 # The Connection Point
-The connection point is a updated versions of [Dead Simple Blog](https://github.com/paintedsky/dead-simple-blog)by paintedsky
+The connection point is a updated versions of [Dead Simple Blog](https://github.com/paintedsky/dead-simple-blog) by paintedsky
 
 I have updated the a few things, changes the design and started to work on a few more functions for it, I liked this idea as I did something like
 this in the past without markdown, that markdown seems to be a really cool idea, I also have added Font Awesome, ParsedownExta and my own ParsedownExtraFix
