@@ -1,3 +1,6 @@
+# The Connection Point
+
+
 # Dead Simple Blog
 
 I've wanted for a long time to create a simple way of blogging that eschews basically all bells and whistles. Many "flat file" Content Management Systems exist already, as well as "static site generators", but none of these that I looked at were simple enough for my liking.
