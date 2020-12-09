@@ -1,7 +1,7 @@
 <?php
-include('Parsedown.php');
-include('ParsedownExtra.php');
-include('ParsedownExtraFix.php');
+include('./config/Parsedown.php');
+include('./config/ParsedownExtra.php');
+include('./config/ParsedownExtraFix.php');
 
 $base_url = './'; // URL of the homepage. Can be absolute or relative.
 $blog_title = 'The Connection Point';
@@ -93,14 +93,14 @@ if(!empty($_GET['post'])){
 	<head>
 		<title><?php if ( !empty($_GET['post']) ) { echo $post_title.' - '; } ?><?php echo $blog_title; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="style.css?<?php echo rand(1000, 999999999); ?>" />
+		<link rel="stylesheet" href="./css/style.css?<?php echo rand(1000, 999999999); ?>" />
 		<link rel="stylesheet" href="./css/bootstrap.css" />
-		<link rel="stylesheet" href="./css/all.css" />
-		<link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-		<link rel="manifest" href="/site.webmanifest">
-		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="stylesheet" href="./fontawesome/css/all.css" />
+		<link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+		<link rel="manifest" href="./favicon/site.webmanifest">
+		<link rel="mask-icon" href="./favicon/safari-pinned-tab.svg" color="#5bbad5">
 		<meta name="msapplication-TileColor" content="#da532c">
 		<meta name="theme-color" content="#ffffff">
 	</head>
