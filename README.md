@@ -18,8 +18,10 @@ Clone the git, Download to Zip will do, unZip and place on your host, edit the s
 in the define section.
 
 ## Understanding Parsedown and Exta
-[Parsedown](https://parsedown.org/demo)
-[ParsedownExtra](https://parsedown.org/extra/)
+[Parsedown](https://parsedown.org/demo)  
+[ParsedownExtra](https://parsedown.org/extra/)  
+
+With our ParsedownExtraFix we also have Tick Box's themed.
 
 
 ## Using Font Awesome Tags
