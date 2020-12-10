@@ -34,7 +34,7 @@ You can use the normal html way Font Awesome shows you or you can use `{fas}fa-i
 it to Font Awesome for you, Titles also support this.
 
 # Changeable Settings 
-View our site version [View](https://lexshadow.cribcraft.co.uk/blog/?post=0003.txt)
+View our site version [View](https://lexshadow.cribcraft.co.uk/blog/?post=0003.txt)  
 Some of the settings are yet to fully be used and are there as placeholders, some settings wont be listed here yet
 all useable settings are below.
 ## Used Settings
