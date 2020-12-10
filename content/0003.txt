@@ -1,5 +1,5 @@
   
-[{fas}fa-hand-point-left{/fas} Back](?)
+[{fas}fa-hand-point-left{/fas} Back](?) [{fab}fa-github-alt{/fab} Raw](https://raw.githubusercontent.com/LexShadow/The-Connection-Point/master/content/0003.txt)
   
 **TCP_APP_ID** & **TCP_APP_VERSION**: <small><span style="color:white;"> - You don't need to edit this section.</span></small>  
 `

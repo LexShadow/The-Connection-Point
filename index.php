@@ -65,6 +65,14 @@ if(!empty($_GET['post'])){
 			$fav = substr($content, strpos($content, '{fas}')+5);
 			$fav = substr($fav, 0, strpos($fav, '{/fas}'));
 		}
+		$fav = substr($content, strpos($content, '{fab}')+5);
+		$fav = substr($fav, 0, strpos($fav, '{/fab}'));
+		while($fav != ""){
+			$favplace = ' <i class="fab ' . $fav . '"></i> ';
+			$content = str_replace("{fab}" . $fav . "{/fab}", $favplace, $content);
+			$fav = substr($content, strpos($content, '{fab}')+5);
+			$fav = substr($fav, 0, strpos($fav, '{/fab}'));
+		}
 	}else{
 		$content = '
 			<h2>Not Found</h2>
@@ -114,6 +122,14 @@ if(!empty($_GET['post'])){
 							$content = str_replace("{fas}" . $fav . "{/fas}", $favplace, $content);
 							$fav = substr($content, strpos($content, '{fas}')+5);
 							$fav = substr($fav, 0, strpos($fav, '{/fas}'));
+						}
+						$fav = substr($content, strpos($content, '{fab}')+5);
+						$fav = substr($fav, 0, strpos($fav, '{/fab}'));
+						while($fav != ""){
+							$favplace = ' <i class="fab ' . $fav . '"></i> ';
+							$content = str_replace("{fab}" . $fav . "{/fab}", $favplace, $content);
+							$fav = substr($content, strpos($content, '{fab}')+5);
+							$fav = substr($fav, 0, strpos($fav, '{/fab}'));
 						}
 					}
 				}
