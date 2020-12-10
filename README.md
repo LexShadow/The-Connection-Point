@@ -1,5 +1,10 @@
 # The Connection Point
 ![Image](https://i.imgur.com/Dxlry4v.png)
+
+## Example
+https://lexshadow.cribcraft.co.uk/blog/?
+
+
 The connection point is a updated versions of [Dead Simple Blog](https://github.com/paintedsky/dead-simple-blog) by paintedsky
 
 I have updated the a few things, changes the design and started to work on a few more functions for it, I liked this idea as I did something like
