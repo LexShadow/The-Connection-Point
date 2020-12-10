@@ -1,15 +1,27 @@
 <?php
-#Basic Setup
-define('APP_ID', 'The Connection Point');
-define('APP_VERSION', '0.0.0.3');
-define('BASE_URL', './');
-define('SITE_TITLE', APP_ID);
-define('SITE_SUB_TITLE', 'Random blog about random things');
-define('SITE_WEBMASTER_NAME', 'Admin');
-define('SITE_WEBMASTER_EMAIL', 'noemail@nodomain.ltd');
 
-#include files
+# Basic Setup
+define('TCP_APP_ID', 'The Connection Point');
+define('TCP_APP_VERSION', '0.0.0.4');
 
+# Basic Site Information
+define('TCP_SITE_BASE_URL', './');
+
+# Shows in the top part of the site.
+define('TCP_SITE_TITLE', TCP_APP_ID);
+define('TCP_SITE_SUB_TITLE', 'Random blog about random things');
+
+# Webmaster Information
+define('TCP_SITE_WEBMASTER_NAME', 'Admin');
+define('TCP_SITE_WEBMASTER_EMAIL', 'noemail@nodomain.ltd');
+
+# News section on the right hand side
+define('TCP_SITE_BRAND', false);
+define('TCP_SITE_NEWS', true);
+define('TCP_SITE_NEWS_TITLE', 'Version');
+define('TCP_SITE_NEWS_BODY', TCP_APP_ID . ' <span style="color: #12d212;">' . TCP_APP_VERSION . '</span>');
+
+# include files
 if(file_exists('./config/Parsedown.php')){
 	$stop = false;
 	include('./config/Parsedown.php');
@@ -57,7 +69,7 @@ if(!empty($_GET['post'])){
 		$content = '
 			<h2>Not Found</h2>
 			<p>Sorry, couldn\'t find a post with that name. Please try again, or go to the 
-			<a href="' . BASE_URL . '">home page</a> to select a different post.</p>';
+			<a href="' . TCP_SITE_BASE_URL . '">home page</a> to select a different post.</p>';
 	}
 	$contentfooter = '	<footer>
 		This blog does not offer comment functionality. we are working on this.
@@ -92,7 +104,7 @@ if(!empty($_GET['post'])){
 						fclose($files);
 						$content .= '<!-- #Blog post -->
 						<div class="blog-post">
-							<h2 class="blog-post-title"><a href="' . BASE_URL . '?post='.$filename_no_ext.'">'.$post_title.'</a></h2>
+							<h2 class="blog-post-title"><a href="' . TCP_SITE_BASE_URL . '?post='.$filename_no_ext.'">'.$post_title.'</a></h2>
 							<p class="blog-post-meta">' . $post_auther . '</p>
 						</div>';
 						$fav = substr($content, strpos($content, '{fas}')+5);
@@ -114,11 +126,17 @@ if(!empty($_GET['post'])){
 	}
 	$contentfooter = '';
 }
+
+if(TCP_SITE_BRAND){
+	$CopyRightShow = '<p><i class="fas fa-copyright"></i> ' . TCP_SITE_TITLE . ' 2020, Powed By The Connection Point(<a href="https://github.com/LexShadow/The-Connection-Point">GitHub</a>)</p>';
+}else{
+	$CopyRightShow = '<p><i class="fas fa-copyright"></i> '. TCP_SITE_TITLE . ' 2020</p>';	
+}
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?php if ( !empty($_GET['post']) ) { echo $post_title.' - '; } ?><?php echo SITE_TITLE; ?></title>
+		<title><?php echo TCP_SITE_TITLE; ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="./css/style.css?<?php echo rand(1000, 999999999); ?>" />
 		<link rel="stylesheet" href="./css/bootstrap.css" />
@@ -152,8 +170,8 @@ if(!empty($_GET['post'])){
 		<hr />
 		<div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
 			<div class="col-md-6 px-0">
-				<h1 class="display-4 font-italic"><a href="<?php echo $base_url; ?>"><?php echo SITE_TITLE; ?></a></h1>
-				<p class="lead my-3"><?php echo SITE_SUB_TITLE; ?></p>
+				<h1 class="display-4 font-italic"><a href="<?php echo TCP_SITE_BASE_URL; ?>"><?php echo TCP_SITE_TITLE; ?></a></h1>
+				<p class="lead my-3"><?php echo TCP_SITE_SUB_TITLE; ?></p>
 			</div>
 		</div>	  
 	</div>
@@ -170,10 +188,12 @@ if(!empty($_GET['post'])){
         </div>
 
         <aside class="col-md-4 blog-sidebar">
-          <div class="p-3 mb-3 bg-light rounded">
-            <h4 class="font-italic">News</h4>
-            <p class="mb-0">The Connection Point<br/> <?php echo APP_VERSION;?></p>
-          </div>
+		<?php if(TCP_SITE_NEWS){ ?>
+				<div class="p-3 mb-3 bg-light rounded">
+					<h4 class="font-italic"><?php echo TCP_SITE_NEWS_TITLE; ?></h4>
+					<p class="mb-0"><?php echo TCP_SITE_NEWS_BODY; ?></p>
+			</div>
+		<?php } ?>
           <div class="p-3">
             <h4 class="font-italic">Pages</h4>
             <ol class="list-unstyled mb-0">
@@ -181,6 +201,8 @@ if(!empty($_GET['post'])){
               <li><a href="?post=0000.txt">About Us</a></li>
               <li><a href="?post=0001.txt">Contact Us</a></li>
               <li><a href="?post=0002.txt">Terms Of Service</a></li>
+              <li><a href="?post=0003.txt">Site Settings</a></li>
+              <li><a href="?post=0004.txt">Cheat Sheets</a></li>
             </ol>
           </div>
           <div class="p-3">
@@ -199,7 +221,7 @@ if(!empty($_GET['post'])){
       </div>
     </main>
     <footer class="blog-footer">
-      <p><i class="fas fa-copyright"></i> <?php echo SITE_TITLE;?> 2020</p>
+      <?php echo $CopyRightShow; ?>
       <p>
         <a href="#">Back to top</a>
       </p>

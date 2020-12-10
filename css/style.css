@@ -1,4 +1,3 @@
-@import url('fonts/fonts.css');
 body {
 	font: 18px 'lato', sans-serif;
 	line-height: 1.5;
@@ -195,7 +194,7 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .blog-footer {
-    padding: 2.5rem 0;
+    padding: 0.5rem 0;
     color: #999;
     text-align: center;
     background-color: #343a40;
