@@ -2,7 +2,7 @@
 ![Image](https://i.imgur.com/Dxlry4v.png)
 
 ## Example
-https://lexshadow.cribcraft.co.uk/blog/?
+https://lexshadow.cribcraft.co.uk/blog (If this is offline then please submite an Issues)
 
 
 The connection point is a updated versions of [Dead Simple Blog](https://github.com/paintedsky/dead-simple-blog) by paintedsky
