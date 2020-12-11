@@ -2,7 +2,8 @@
 ![Image](https://i.imgur.com/Dxlry4v.png)
 
 ## Example
-https://lexshadow.cribcraft.co.uk/blog (If this is offline then please submite an Issues)
+https://lexshadow.cribcraft.co.uk/blog (If this is offline then please submite an Issues), this might also be a few versions above the Git version as this is a live
+test bed.
 
 
 The connection point is a updated versions of [Dead Simple Blog](https://github.com/paintedsky/dead-simple-blog) by paintedsky
