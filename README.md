@@ -17,6 +17,22 @@ random blog what I want to use via Tor so this will help me keep this project go
 
 Other useful things, no JS, easy to use in plain markdown, same system for pages and blogs, in the future comments and more.
 
+## Bells & Whistles
+* Bootstrap design.
+* None Java Script.
+* Blog returns of 8 (config).
+* Blog Pagination.
+* Standalone Page Support.
+* Font Awesome Support.
+* Tor Friendly(Full No Script)
+* Database free.
+* - More to come.
+
+## Scripting/Design Languages
+* PHP
+* HTML
+* CSS
+* 
 
 ## Installation
 
