@@ -26,7 +26,7 @@ Other useful things, no JS, easy to use in plain markdown, same system for pages
 * Font Awesome Support.
 * Tor Friendly(Full No Script)
 * Database free.
-* - More to come.
+*  -- More to come.
 
 ## Scripting/Design Languages
 * PHP
