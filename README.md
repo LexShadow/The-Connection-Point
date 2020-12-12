@@ -32,7 +32,6 @@ Other useful things, no JS, easy to use in plain markdown, same system for pages
 * PHP
 * HTML
 * CSS
-* 
 
 ## Installation
 
