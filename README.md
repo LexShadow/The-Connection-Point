@@ -2,9 +2,8 @@
 ![Image](https://i.imgur.com/Dxlry4v.png)
 
 ## Example
-https://lexshadow.cribcraft.co.uk/blog (If this is offline then please submite an Issues), this might also be a few versions above the Git version as this is a live
-test bed.
-
+ * **Cleanweb** https://lexshadow.cribcraft.co.uk/blog (If this is offline then please submit a Issues), this might also be a few versions above the Git version as this is a live test bed.
+* **Tor** http://b66ylxnbqx4w3bhn5cwxxiakl3iiha4aplhc4eb63fkoennsbbce4qad.onion/ (if this is down/offline give it another try, if it don't work a few hours later feel free to submit a Issue) This might be a few versions behind both the Git and **Cleanweb** versions.
 
 The connection point is a updated versions of [Dead Simple Blog](https://github.com/paintedsky/dead-simple-blog) by paintedsky
 
