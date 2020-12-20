@@ -2,7 +2,7 @@
 
 # Basic Setup
 define('TCP_APP_ID', 'The Connection Point');
-define('TCP_APP_VERSION', '0.0.0.5');
+define('TCP_APP_VERSION', '0.0.0.6');
 
 # Basic Site Information
 define('TCP_SITE_BASE_URL', './');
@@ -16,10 +16,32 @@ define('TCP_SITE_WEBMASTER_NAME', 'Admin');
 define('TCP_SITE_WEBMASTER_EMAIL', 'noemail@nodomain.ltd');
 
 # News section on the right hand side
-define('TCP_SITE_BRAND', false);
+define('TCP_SITE_BRAND', true);
 define('TCP_SITE_NEWS', true);
 define('TCP_SITE_NEWS_TITLE', 'Version');
 define('TCP_SITE_NEWS_BODY', TCP_APP_ID . ' <span style="color: #12d212;">' . TCP_APP_VERSION . '</span>');
+
+# No Comments Warning - temp function will be removed in the future
+define('TCP_SITE_COMMENTS', false);
+
+define('TCP_THEME_TOPNAV', false);
+define('TCP_THEME_TOPNAV_BODY', '			<div class="nav-scroller py-1 mb-2">
+				<nav class="nav d-flex justify-content-between">
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+					<a class="p-2 text-muted" href="#">~</a>
+				</nav>
+			</div>
+		<hr />');
 
 # include files
 if(file_exists('./config/Parsedown.php')){
@@ -99,9 +121,13 @@ if(!empty($_GET['post'])){
 				<a href="' . TCP_SITE_BASE_URL . '">home page</a> to select a different post.</p>';
 			$showpage = false;
 		}
-		$contentfooter = '	<footer>
-			This blog does not offer comment functionality. we are working on this.
-		</footer>';
+		if(TCP_SITE_COMMENTS){
+			$contentfooter = '	<footer>
+				This blog does not offer comment functionality. we are working on this.
+			</footer>';
+		}else{
+			$contentfooter = '';			
+		}
 		$contentfooters = '	<footer>
 			This blog does not offer comment functionality. If you\'d like to discuss any of the topics 
 			written about here, you can <a href="mailto:' . TCP_SITE_WEBMASTER_EMAIL . '">send an email</a>.
@@ -117,7 +143,7 @@ if(!empty($_GET['post'])){
 		$GrabThis = array_slice(scandir(__DIR__.'/content/blogs'), 2);
 		$filec = count($GrabThis);
 		$pages = ceil(count($GrabThis)/$BlogLimit);		
-		$GrabThisFF = array_reverse(array_slice($GrabThis, $PageOffset, $BlogLimit));
+		$GrabThisFF = array_slice(array_reverse($GrabThis), -($filec-$PageOffset), $BlogLimit);
 		if($BlogPage <= $pages){
 			$showpage = true;
 		}else{
@@ -169,10 +195,16 @@ if(!empty($_GET['post'])){
 					}
 				}
 			}
+			
+			if($content == ""){
+				$content = '
+				<h2>No Blogs Found</h2>
+				<p>There isn\'t any blogs yet posted or you are end of the line, time to create some or go back.</p>';
+			}
 		}else{
-		$content = '
-			<h2>No Blogs found</h2>
-			<p>There isn\'t any blogs yet posted, time to create some.</p>';
+			$content = '
+			<h2>No Blogs Found</h2>
+			<p>There isn\'t any blogs yet posted or you are end of the line, time to create some or go back.</p>';
 		}
 	}else{
 		$content = '
@@ -206,23 +238,11 @@ if(TCP_SITE_BRAND){
 	</head>
 	<body>
 		<div class="container">
-			<div class="nav-scroller py-1 mb-2">
-				<nav class="nav d-flex justify-content-between">
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-				</nav>
-			</div>
-		<hr />
+		<?php
+			if(TCP_THEME_TOPNAV){
+				echo TCP_THEME_TOPNAV_BODY;
+			}
+		?>
 		<div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
 			<div class="col-md-6 px-0">
 				<h1 class="display-4 font-italic"><a href="<?php echo TCP_SITE_BASE_URL; ?>"><?php echo TCP_SITE_TITLE; ?></a></h1>
@@ -239,8 +259,8 @@ if(TCP_SITE_BRAND){
 			<?php if($showpage){?>
 			<nav class="blog-pagination">
 				Pages(<?php echo $BlogPage . '/' .$pages?>) With <?php echo $filec; ?> Blogs.
-				<a class="btn btn-outline-primary <?php echo ($BlogPage == 1 || $BlogPage < $pages)? "disabled": "";?>" href="?page=<?php echo ($BlogPage-1);?>">Older</a>
-				<a class="btn btn-outline-secondarya <?php echo ($BlogPage == $pages)? "disabled": "";?>" href="?page=<?php echo ($BlogPage+1);?>">Newer</a>
+				<a class="btn btn-outline-secondarya <?php echo ($BlogPage == 1 || $BlogPage < $pages)? "disabled": "";?>" href="?page=<?php echo ($BlogPage-1);?>">Newer</a>
+				<a class="btn btn-outline-secondarya <?php echo ($BlogPage == $pages)? "disabled": "";?>" href="?page=<?php echo ($BlogPage+1);?>">Older</a>
 			</nav>
 			<?php } ?>
 		</div>
@@ -261,6 +281,7 @@ if(TCP_SITE_BRAND){
               <li><a href="?post=0002&sec=pages">Terms Of Service</a></li>
               <li><a href="?post=0003&sec=pages">Site Settings</a></li>
               <li><a href="?post=0004&sec=pages">Cheat Sheets</a></li>
+              <li><a href="https://github.com/LexShadow/The-Connection-Point" title="GitHub">Downloads</a></li>
             </ol>
           </div>
           <div class="p-3">
