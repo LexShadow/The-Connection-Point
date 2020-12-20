@@ -3,7 +3,7 @@
 
 ## Example
  * **Clearnet** https://lexshadow.cribcraft.co.uk/blog (If this is offline then please submit a Issues), this might also be a few versions above the Git version as this is a live test bed.
-* **Tor V3** http://b66ylxnbqx4w3bhn5cwxxiakl3iiha4aplhc4eb63fkoennsbbce4qad.onion/ (if this is down/offline give it another try, if it don't work a few hours later feel free to submit a Issue) This might be a few versions behind both the Git and **Cleanweb** versions.
+* **Tor V3** http://i2dny75d77eukohjtzax6tkbbd53lcsnb4g4wrzj3dbpmayxuv4osdqd.onion/ (if this is down/offline give it another try, if it don't work a few hours later feel free to submit a Issue) This might be a few versions behind both the Git and **Cleanweb** versions.
 
 * **Tor V2** http://g2dv4s6shqictlln.onion/ (if this is down/offline give it another try, if it don't work a few hours later feel free to submit a Issue) This might be a few versions behind both the Git and **Cleanweb** versions.
 
