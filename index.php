@@ -1,76 +1,33 @@
 <?php
 
-# Basic Setup
-define('TCP_APP_ID', 'The Connection Point');
-define('TCP_APP_VERSION', '0.0.0.6');
+#Include the Core
 
-# Basic Site Information
-define('TCP_SITE_BASE_URL', './');
-
-# Shows in the top part of the site.
-define('TCP_SITE_TITLE', TCP_APP_ID);
-define('TCP_SITE_SUB_TITLE', 'Random blog about random things');
-
-# Webmaster Information
-define('TCP_SITE_WEBMASTER_NAME', 'Admin');
-define('TCP_SITE_WEBMASTER_EMAIL', 'noemail@nodomain.ltd');
-
-# News section on the right hand side
-define('TCP_SITE_BRAND', true);
-define('TCP_SITE_NEWS', true);
-define('TCP_SITE_NEWS_TITLE', 'Version');
-define('TCP_SITE_NEWS_BODY', TCP_APP_ID . ' <span style="color: #12d212;">' . TCP_APP_VERSION . '</span>');
-
-# No Comments Warning - temp function will be removed in the future
-define('TCP_SITE_COMMENTS', false);
-
-define('TCP_THEME_TOPNAV', false);
-define('TCP_THEME_TOPNAV_BODY', '			<div class="nav-scroller py-1 mb-2">
-				<nav class="nav d-flex justify-content-between">
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-					<a class="p-2 text-muted" href="#">~</a>
-				</nav>
-			</div>
-		<hr />');
-
-# include files
-if(file_exists('./config/Parsedown.php')){
-	$stop = false;
-	include('./config/Parsedown.php');
+if(!file_exists('./config/coresettings.php')){
+	die('This script is missing it\'s core settings, please reinstall them`');
 }else{
-	$stop = true;
+	include('./config/coresettings.php');
 }
-if(file_exists('./config/ParsedownExtra.php')){
-	$stop = false;
-	include('./config/ParsedownExtra.php');
-}else{
-	$stop = true;
-}
-if(file_exists('./config/ParsedownExtraFix.php')){
-	$stop = false;
-	include('./config/ParsedownExtraFix.php');
-}else{
-	$stop = true;
-}
-$headder = '
-<h3 class="pb-3 mb-4 font-italic border-bottom">
-	Blogs
-</h3>';
-$BlogLimit = 8;
+
+#Start a session for the recapture
+if(!session_id()) session_start(); 
+## Blog Header
+$headder = print_header("Blogs");
 $BlogPage = ((empty($_GET['page']) == true) ? 0 : (int)$_GET['page']);
 if(!($BlogPage>0)) $BlogPage = 1;
-$PageOffset = ($BlogPage-1)*$BlogLimit;
-
+$PageOffset = ($BlogPage-1) * TCP_SITE_BLOG_LIMIT;
+$file_comment_path = '';
+function filter($source_input) {
+    return preg_replace(
+        array(
+            '/&lt;(\/?)(b|blockquote|br|em|i|ins|mark|q|strong|u)&gt;/i',
+            '/&amp;([a-zA-Z]+|\#[0-9]+);/'
+        ),
+        array(
+            '<$1$2>',
+            '&$1;'
+        ),
+    $source_input);
+}
 
 if(!empty($_GET['post'])){
 	if(!$stop){
@@ -79,23 +36,97 @@ if(!empty($_GET['post'])){
 		}else{
 			if(is_dir(__DIR__.'/content/' . $_GET['sec'])){
 				$folder = $_GET['sec'];
-				
-				$headder = '
-			<h3 class="pb-3 mb-4 font-italic border-bottom">
-				' . ucfirst($folder) . '
-			</h3>';
+				$headder = print_header($folder);
 			}else{
 				$folder = 'blogs';
 			}
 		}
 		$post_name = filter_var($_GET['post'], FILTER_SANITIZE_NUMBER_INT);
 		$file_path = __DIR__.'/content/' . $folder . '/'.$post_name;
-
+		$file_comment_path = __DIR__.'/content/comments/' . $post_name . '-com';
+		if(file_exists($file_comment_path)){
+			$pullComments_old = file_get_contents($file_comment_path);
+		}else{
+			$pullComments_old = array();
+		}
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
+			$CommentUsername = "Anonymous";
+			if(TCP_SITE_COMMENTS_HIDE){
+				$url = "Hide";
+			}else{
+				$url = "View";
+			}
+			$message = "";
+			$timestamp = date('U');
+			$Locked = "";
+			$error = '';
+			
+			#Grab Message
+			if(isset($_POST['message']) && ! empty($_POST['message'])) {
+				$message = preg_replace(
+					array(
+						'/[\n\r]{4,}/', // [1]
+						'/\n/',
+						'/[\r\t]/',
+						'/ {2}/',
+						'/ &nbsp;|&nbsp; /',
+						'/<a (.*?)?href=(\'|\")(.*?)(\'|\")(.*?)?>(.*?)<\/a>/i'
+					),
+					array(
+						'<br><br>',
+						'<br>',
+						'',
+						'&nbsp;&nbsp;',
+						'&nbsp;&nbsp;',
+						'$6'
+					),
+				$_POST['message']);
+				$message = htmlentities($message, ENT_QUOTES, 'UTF-8');
+			}else{
+				$error .= "<p class=\"message-error\">Missing Message</p>";
+			}
+			if(!isset($_POST['hello']) || empty($_POST['hello']) || $_POST['hello'] != $_SESSION['hello']) {
+				$error .= "<p class=\"message-error\">Invalid Capture</p>";
+			}
+			if(strlen($message) > TCP_SITE_COMMENTS_MAXMESSAGELIMIT) $error .= "<p class=\"message-error\">" . TCP_SITE_COMMENTS_MAXMESSAGELIMIT . "</p>";
+			if($error === "") {
+				$pushmsg = $CommentUsername. "\n" . $url . "\n" . $message . "\n" . $timestamp . "\n" . $Locked;
+				if(!empty($pullComments_old)) {
+					 updatecomment($file_comment_path, $pushmsg . "\n\n{NEXTCOMMENT}\n" . $pullComments_old);
+				}else{
+					 updatecomment($file_comment_path, $pushmsg);
+				}
+			}
+		}
+		$FirstN = mt_rand(1, 50);
+		$LastN = mt_rand(1, 50);
+		if($FirstN - $LastN > 0){
+			$_SESSION['hello'] = $FirstN - $LastN;
+			$recap_number = $FirstN . ' - ' . $LastN;
+		}else{
+			$_SESSION['hello'] = $FirstN + $LastN;
+			$recap_number = $FirstN . ' + ' . $LastN;
+		}
 		if(file_exists($file_path)){
+			$parsedown = new ParsedownExtraFix();
+			if($folder !== "pages"){
+				if(!file_exists($file_comment_path)){
+					$myfile = fopen($file_comment_path, 'w');
+					fwrite($myfile, "\n");
+					fclose($myfile);
+					//$pullComments = $parsedown->text(file_get_contents($file_comment_path));
+					$pullComments = file_get_contents($file_comment_path);
+				}else{
+					//$pullComments = $parsedown->text(file_get_contents($file_comment_path));
+					$pullComments = file_get_contents($file_comment_path);
+				}
+			}else{
+				define('TCP_SITE_COMMENTS', false);
+				$pullComments = "";
+			}
 			$file = fopen($file_path, 'r');
 			$post_title = trim(fgets($file),'#');
 			fclose($file);
-			$parsedown = new ParsedownExtraFix();
 			$content = $parsedown->text(file_get_contents($file_path));
 			$fav = substr($content, strpos($content, '{fas}')+5);
 			$fav = substr($fav, 0, strpos($fav, '{/fas}'));
@@ -121,9 +152,18 @@ if(!empty($_GET['post'])){
 				<a href="' . TCP_SITE_BASE_URL . '">home page</a> to select a different post.</p>';
 			$showpage = false;
 		}
-		if(TCP_SITE_COMMENTS){
+		if($pullComments == ""){
 			$contentfooter = '	<footer>
-				This blog does not offer comment functionality. we are working on this.
+				There is no comments at this time.
+			</footer>';
+		}else{
+			$contentfooter = '';			
+		}
+		if(!TCP_SITE_COMMENTS && $folder == 'blogs'){
+			$contentfooter = '';
+			
+			$contentfooterS = '	<footer>
+				There is no comments at this time.
 			</footer>';
 		}else{
 			$contentfooter = '';			
@@ -142,8 +182,8 @@ if(!empty($_GET['post'])){
 		$content = "";
 		$GrabThis = array_slice(scandir(__DIR__.'/content/blogs'), 2);
 		$filec = count($GrabThis);
-		$pages = ceil(count($GrabThis)/$BlogLimit);		
-		$GrabThisFF = array_slice(array_reverse($GrabThis), -($filec-$PageOffset), $BlogLimit);
+		$pages = ceil(count($GrabThis)/TCP_SITE_BLOG_LIMIT);		
+		$GrabThisFF = array_slice(array_reverse($GrabThis), -($filec-$PageOffset), TCP_SITE_BLOG_LIMIT);
 		if($BlogPage <= $pages){
 			$showpage = true;
 		}else{
@@ -155,7 +195,7 @@ if(!empty($_GET['post'])){
 					if(!is_dir(__DIR__.'/content/blogs/' . $file)){
 						$filename_no_ext = $file;
 						$filename_no_extShow = str_replace(".txt", "", $file);
-						if(strlen($filename_no_extShow) > 8){
+						if(strlen($filename_no_extShow) > 8 && strlen($filename_no_extShow) < 16){
 							$file_path = __DIR__.'/content/blogs/' . $file;
 							$files = fopen($file_path, 'r');
 							$line = 0;
@@ -219,6 +259,7 @@ if(TCP_SITE_BRAND){
 }else{
 	$CopyRightShow = '<p><i class="fas fa-copyright"></i> '. TCP_SITE_TITLE . ' 2020</p>';	
 }
+$Cpage = isset($_GET['cpage']) ? $_GET['cpage'] : 1;
 ?>
 <!DOCTYPE html>
 <html>
@@ -253,10 +294,111 @@ if(TCP_SITE_BRAND){
     <main role="main" class="container">
 		<div class="row">
 		<div class="col-md-8 blog-main">
-			<?php echo $headder;?>
-			<?php echo $content;?>
-			<?php echo $contentfooter ;?>
-			<?php if($showpage){?>
+			<?php 
+			$CommentPages = '';
+			$CommentsShow = '';
+			echo $headder;
+			echo $content;
+			echo $contentfooter ;
+			if(TCP_SITE_COMMENTS && file_exists($file_comment_path)){
+				if($pullComments !== ""){
+					$pullComments = explode("\n{NEXTCOMMENT}\n", $pullComments);
+					$CommentTotal = ceil(count($pullComments) / TCP_SITE_COMMENTS_LIMIT);
+					if($CommentTotal > 1) {
+						for($i = 0; $i < $CommentTotal; $i++) {
+							if($Cpage == ($i + 1)) {
+								$CommentPages .= " <span>" . ($i + 1) . "</span>";
+							} else {
+								$CommentPages .= ' <a href="?post=' . $post_name . '&amp;cpage=' . ($i + 1) . (isset($_GET['data']) ? '&amp;data=' . $database : '') . '">' . ($i + 1) . '</a>';
+							}
+						}
+					}else{
+						$CommentPages = '';
+					}
+					for($i = 0; $i < count($pullComments); $i++) {
+						$Data = explode("\n", $pullComments[$i]);
+						if($Data[0] !== ""){
+							if(isset($_GET['raw']) && preg_match('/[0-9]+/', $_GET['raw'])) {
+								if($Data[3] == $_GET['raw']) {
+									// do something
+								}
+							}else{
+								if($i <= (TCP_SITE_COMMENTS_LIMIT * $Cpage) - 1 && $i > (TCP_SITE_COMMENTS_LIMIT * ($Cpage - 1)) -1) {
+									$DataIMG = 'ann.png';
+									if($Data[4] == "Locked"){
+										$Data[0] = "[Deleted]";
+										$Data[2] = "This content has been removed.";
+										$Data[3] = 	-11676095400;
+										$DataIMG = 'del.png';
+									}
+									if($Data[4] == "Admin"){
+										$Data[0] = "Master Clicker";
+										$DataIMG = 'admin.png';
+									}
+									$CommentsShow .= '<div class="be-comment">';
+									$CommentsShow .= '		<div class="be-img-comment">	
+									<a href="#">
+										<img src="./media/' . $DataIMG . '" alt="[=]" class="be-ava-comment">
+									</a>
+									</div>
+									<div class="be-comment-content">
+										<span class="be-comment-name">
+											<a href="#">';
+									$CommentsShow .= $Data[0];
+									$CommentsShow .= '</a>
+									</span>
+									<span class="be-comment-time">
+										<i class="fas fa-calendar-alt"></i> 
+									';
+									$CommentsShow .= '&nbsp;' .date('d/m/Y H:i', $Data[3]);
+									$CommentsShow .= '</span>
+									<p class="be-comment-text">';
+									if($Data[1] == "View" || !TCP_SITE_COMMENTS_HIDE){
+										$CommentsShow .= filter($Data[2]) . '<br>';
+									}else{
+										$CommentsShow .= 'Comment is awaiting approval<br>';
+									}
+									$CommentsShow .= '</p>';
+									$CommentsShow .= '</div>';
+									$CommentsShow .= '</div>';
+								}
+							}
+						}
+					}
+				}else{
+					$CommentPages = '';
+				}
+				
+				if($CommentsShow == '' && $folder == "blogs"){
+					$CommentsShow = '
+					<footer>
+						There is no comments at this time.
+					</footer>';
+				}
+				
+				echo '<div class="container">
+					<div class="">
+					<h1 class="comments-title">' . TCP_SITE_COMMENTS_TITLE. '</h1>' 
+					. $CommentsShow .	
+				'
+				<div>' . $CommentPages . '</div>
+				<form method="post" class="form-block">
+				<div><input type="hidden" name="name" value="Anonymous"></div>
+				<label>' . TCP_SITE_COMMENTS_TITLE. '</label>
+				<div><textarea name="message" style="width: 100%; max-width: 100%;"></textarea></div>
+				<hr>
+				<div>
+					'. $recap_number . ' = <input type="text" name="hello" autocomplete="off"> 
+					<button type="submit">
+						Comment
+					</button>
+					
+				</div>
+				<span class="clear"></span>
+			  </form>	</div>
+				</div>';
+			}
+			if($showpage){?>
 			<nav class="blog-pagination">
 				Pages(<?php echo $BlogPage . '/' .$pages?>) With <?php echo $filec; ?> Blogs.
 				<a class="btn btn-outline-secondarya <?php echo ($BlogPage == 1 || $BlogPage < $pages)? "disabled": "";?>" href="?page=<?php echo ($BlogPage-1);?>">Newer</a>
@@ -280,8 +422,8 @@ if(TCP_SITE_BRAND){
               <li><a href="?post=0001&sec=pages">Contact Us</a></li>
               <li><a href="?post=0002&sec=pages">Terms Of Service</a></li>
               <li><a href="?post=0003&sec=pages">Site Settings</a></li>
-              <li><a href="?post=0004&sec=pages">Cheat Sheets</a></li>
-              <li><a href="https://github.com/LexShadow/The-Connection-Point" title="GitHub">Downloads</a></li>
+              <!-- li><a href="?post=0004&sec=pages">Cheat Sheets</a></li -->
+              <li><a href="https://github.com/LexShadow/The-Connection-Point" title="GitHub">GitHub</a></li>
             </ol>
           </div>
           <div class="p-3">
@@ -293,7 +435,9 @@ if(TCP_SITE_BRAND){
           <div class="p-3">
             <h4 class="font-italic">Our other sites</h4>
             <ol class="list-unstyled">
-              <li><a href="#">None</a></li>
+              <li><a href="http://i2dny75d77eukohjtzax6tkbbd53lcsnb4g4wrzj3dbpmayxuv4osdqd.onion/">Onion v3 Version</a> - Tor Network</li>
+              <li><a href="http://g2dv4s6shqictlln.onion/">Onion v2 Version</a> - Tor Network</li>
+              <li><a href="https://lexshadow.cribcraft.co.uk/blog">Clearnet</a> - Normal Website</li>
             </ol>
           </div>
         </aside>
