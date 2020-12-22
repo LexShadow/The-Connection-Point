@@ -1,0 +1,21 @@
+#{fas}fa-door-open{/fas} Welcome
+<small>Posted By: <span style="color:red">Master Clicker</span>, {fas}fa-calendar-alt{/fas} Tuesday 22nd {fas}fa-snowman{/fas} December {fas}fa-snowman{/fas} 2020</small>  
+[{fas}fa-hand-point-left{/fas} Back](?)
+
+
+Welcome to the blog, this syste now supports blogs, pages and comments, it also users bootstrap for better design elements and also uses Font Awesome for the little extra
+pep.  
+  
+This blog system is slow servers, no db servers and tor friendly, we have no databases, it's coded in **CSS**, **HTML** &amp; **PHP** and to make it tor friendly we don't
+record any data from the end user and have no Java Scripting, view our GitHun [Visit](https://github.com/LexShadow/The-Connection-Point) if you want to see our source it 
+also lists on the right the coding used within the project. At the time of writing this blog post the languages was at **PHP** <span style="color:white">95.5%</span>(this
+ includes the html) and <span style="color:white">4.5%</span> **CSS**  
+   
+Thanks for coming, I hope you enjoy this blogging software as much as I did creating it, there is more to come in the future.  
+  
+  
+Below you will be able to see our **comments**, newest comments are at the top, as you can see below, We have one from myself,  one awaiting approvel and one what says it's  
+deleted, if you don't want to see the deleted entry you just delete it, but you are able to disable the comment for later use if you needed it, lets say someone puts in there
+contact details, you want to keep it for future use but don't want to show everyone it, you can set it to be deleted to the system and you get the view you see below.
+
+What to see a litte more of the system? view our Site Settings page, what explains some of the functions, you can view that [here](./?post=0003&sec=pages)
